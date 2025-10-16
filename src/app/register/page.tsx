@@ -1,4 +1,26 @@
+'use client'
+
+import { useState } from 'react'
+
 export default function Register() {
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [passwordMatch, setPasswordMatch] = useState(true)
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newPassword = e.target.value
+    setPassword(newPassword)
+    setPasswordMatch(newPassword === confirmPassword || confirmPassword === '')
+  }
+
+  const handleConfirmPasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newConfirmPassword = e.target.value
+    setConfirmPassword(newConfirmPassword)
+    setPasswordMatch(password === newConfirmPassword || newConfirmPassword === '')
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4 py-8">
       <div className="max-w-md w-full">
@@ -16,6 +38,22 @@ export default function Register() {
         {/* Register Form */}
         <div className="bg-white rounded-2xl shadow-xl p-8">
           <form className="space-y-6">
+            <div>
+              <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
+                ประเภทผู้ใช้
+              </label>
+              <select
+                id="role"
+                name="role"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
+                required
+              >
+                <option value="" disabled selected>เลือกประเภทผู้ใช้</option>
+                <option value="teacher">ครู</option>
+                <option value="student">นักเรียน</option>
+              </select>
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -25,7 +63,7 @@ export default function Register() {
                   type="text"
                   id="firstName"
                   name="firstName"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
                   placeholder="ชื่อ"
                   required
                 />
@@ -38,7 +76,7 @@ export default function Register() {
                   type="text"
                   id="lastName"
                   name="lastName"
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
                   placeholder="นามสกุล"
                   required
                 />
@@ -46,15 +84,29 @@ export default function Register() {
             </div>
 
             <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                ชื่อผู้ใช้/รหัสนักเรียน
+              </label>
+              <input
+                type="text"
+                id="username"
+                name="username"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
+                placeholder="ชื่อผู้ใช้หรือรหัสนักเรียน"
+                required
+              />
+            </div>
+
+            <div>
               <label htmlFor="schoolName" className="block text-sm font-medium text-gray-700 mb-2">
-                ชื่อโรงเรียน/สถาบัน
+                ชื่อโรงเรียน
               </label>
               <input
                 type="text"
                 id="schoolName"
                 name="schoolName"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="ชื่อโรงเรียนหรือสถาบันของคุณ"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
+                placeholder="ชื่อโรงเรียนของคุณ"
                 required
               />
             </div>
@@ -67,53 +119,91 @@ export default function Register() {
                 type="email"
                 id="email"
                 name="email"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
                 placeholder="อีเมลของคุณ"
                 required
               />
             </div>
 
-            <div>
-              <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                เบอร์โทรศัพท์
-              </label>
-              <input
-                type="tel"
-                id="phone"
-                name="phone"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="เบอร์โทรศัพท์ของคุณ"
-                required
-              />
-            </div>
+
 
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 รหัสผ่าน
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)"
-                required
-                minLength={8}
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  id="password"
+                  name="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
+                  placeholder="รหัสผ่าน (อย่างน้อย 8 ตัวอักษร)"
+                  required
+                  minLength={8}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showPassword ? (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464m1.414 1.414L8.464 8.464m2.829 2.829L16.95 15.95" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
             </div>
 
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
                 ยืนยันรหัสผ่าน
               </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                name="confirmPassword"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                placeholder="ยืนยันรหัสผ่าน"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  value={confirmPassword}
+                  onChange={handleConfirmPasswordChange}
+                  className={`w-full px-4 py-3 pr-12 border rounded-lg focus:ring-2 focus:border-transparent transition-colors text-gray-900 bg-white ${
+                    !passwordMatch 
+                      ? 'border-red-300 focus:ring-red-500' 
+                      : 'border-gray-300 focus:ring-blue-500'
+                  }`}
+                  placeholder="ยืนยันรหัสผ่าน"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
+                >
+                  {showConfirmPassword ? (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L8.464 8.464m1.414 1.414L8.464 8.464m2.829 2.829L16.95 15.95" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
+              {!passwordMatch && confirmPassword && (
+                <p className="mt-1 text-sm text-red-600">รหัสผ่านไม่ตรงกัน</p>
+              )}
+              {passwordMatch && confirmPassword && password && (
+                <p className="mt-1 text-sm text-green-600">รหัสผ่านตรงกัน ✓</p>
+              )}
             </div>
 
             <div className="flex items-start">
@@ -138,43 +228,27 @@ export default function Register() {
 
             <button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+              disabled={!passwordMatch || password.length < 8}
+              className={`w-full py-3 px-4 rounded-lg font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105 ${
+                !passwordMatch || password.length < 8
+                  ? 'bg-gray-400 cursor-not-allowed text-white'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
             >
-              สมัครสมาชิกฟรี
+              สมัครสมาชิก
             </button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-gray-600">
               มีบัญชีอยู่แล้ว?{' '}
-              <a href="/login" className="text-blue-600 hover:text-blue-500 font-semibold">
+              <a href="/" className="text-blue-600 hover:text-blue-500 font-semibold">
                 เข้าสู่ระบบ
               </a>
             </p>
           </div>
-
-          {/* Features Reminder */}
-          {/* <div className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h3 className="text-sm font-semibold text-blue-800 mb-2">✨ สิ่งที่คุณจะได้รับฟรี:</h3>
-            <ul className="text-sm text-blue-700 space-y-1">
-              <li>• ใช้งานฟรี ไม่มีค่าใช้จ่าย</li>
-              <li>• จัดการนักเรียนไม่จำกัด</li>
-              <li>• รายงานและสถิติครบครัน</li>
-              <li>• ระบบแจ้งเตือนผู้ปกครอง</li>
-            </ul>
-          </div> */}
-        </div>
-
-        {/* Back to Home */}
-        <div className="text-center mt-6">
-          <a href="/" className="text-blue-600 hover:text-blue-700 transition-colors flex items-center justify-center space-x-2">
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-            </svg>
-            <span>กลับสู่หน้าแรก</span>
-          </a>
         </div>
       </div>
     </div>
-  )
+  );
 }

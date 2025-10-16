@@ -10,22 +10,22 @@ export default function Login() {
                         </div>
                     </div>
                     <h1 className="text-3xl font-bold text-blue-900 mb-2">เข้าสู่ระบบ</h1>
-                    <p className="text-blue-600">Easy Attend - ระบบบันทึกการเข้าเรียนของนักเรียน </p>
+                    <p className="text-blue-600">Easy Attend - ใช้งานฟรี</p>
                 </div>
 
                 {/* Login Form */}
                 <div className="bg-white rounded-2xl shadow-xl p-8">
                     <form className="space-y-6">
                         <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                                อีเมล
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
+                                ชื่อผู้ใช้/อีเมล
                             </label>
                             <input
-                                type="email"
-                                id="email"
-                                name="email"
+                                type="text"
+                                id="username"
+                                name="username"
                                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                                placeholder="กรอกอีเมลของคุณ"
+                                placeholder="ชื่อผู้ใช้หรืออีเมล"
                                 required
                             />
                         </div>
