@@ -10,6 +10,19 @@ export default function Dashboard() {
     school: 'โรงเรียนสาธิตมหาวิทยาลัย',
     role: 'teacher'
   })
+  const [showLogoutModal, setShowLogoutModal] = useState(false)
+
+  const handleLogout = () => {
+    setShowLogoutModal(true)
+  }
+
+  const confirmLogout = () => {
+    // จริงๆ จะเรียก logout API และ redirect
+    console.log('Logging out...')
+    // Example: router.push('/login')
+    alert('ออกจากระบบเรียบร้อยแล้ว')
+    setShowLogoutModal(false)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
@@ -28,8 +41,12 @@ export default function Dashboard() {
             </div>
             <div className="flex items-center space-x-4">
               <span className="text-sm text-gray-600">สวัสดี, {user.name}</span>
-              <button className="bg-gray-100 hover:bg-gray-200 px-3 py-2 rounded-lg text-sm transition-colors">
-                ออกจากระบบ
+              <button 
+                onClick={handleLogout}
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2"
+              >
+                <span>🚪</span>
+                <span>ออกจากระบบ</span>
               </button>
             </div>
           </div>
@@ -167,6 +184,39 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      {/* Logout Confirmation Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div className="mt-3">
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <span className="text-2xl">🚪</span>
+              </div>
+              <h3 className="text-lg font-bold text-gray-900 text-center mb-4">ยืนยันการออกจากระบบ</h3>
+              <p className="text-sm text-gray-500 text-center mb-6">
+                คุณแน่ใจหรือไม่ที่จะออกจากระบบ?
+                <br />
+                คุณจะต้องเข้าสู่ระบบใหม่อีกครั้ง
+              </p>
+              <div className="flex justify-center space-x-3">
+                <button
+                  onClick={() => setShowLogoutModal(false)}
+                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  onClick={confirmLogout}
+                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                >
+                  ออกจากระบบ
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
