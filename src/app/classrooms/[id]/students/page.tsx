@@ -1,498 +1,560 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import React, { useState } from 'react';
+import TeacherLayout from '@/components/TeacherLayout';
+import { 
+  Users, 
+  Plus, 
+  Search, 
+  Edit, 
+  Trash2, 
+  MoreVertical,
+  Download,
+  Upload,
+  UserPlus,
+  Mail,
+  Phone,
+  Calendar,
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertTriangle
+} from 'lucide-react';
+
+interface Student {
+  id: string;
+  name: string;
+  email: string;
+  studentId: string;
+  phone?: string;
+  enrolledAt: string;
+  lastActivity: string;
+  attendanceRate: number;
+  totalSessions: number;
+  presentSessions: number;
+  absentSessions: number;
+  lateSessions: number;
+  isActive: boolean;
+}
 
 export default function ClassroomStudentsPage() {
-  const params = useParams()
-  const classroomId = params.id as string
+  const [activeMenuItem, setActiveMenuItem] = useState('classrooms');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState<string | null>(null);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [showBulkModal, setShowBulkModal] = useState(false);
 
-  // Mock data - จริงๆ จะ fetch จาก API
-  const [classroom] = useState({
-    id: classroomId,
-    name: 'คณิตศาสตร์ ม.6/1',
-    code: 'MATH601',
+  // Mock classroom data
+  const classroom = {
+    id: '1',
+    name: 'คณิตศาสตร์ ม.3/1',
     subject: 'คณิตศาสตร์',
-    grade: 'ม.6',
-    section: '1',
-    teacherName: 'อาจารย์สมชาย ใจดี'
-  })
+    code: 'MATH301'
+  };
 
-  const [students, setStudents] = useState([
+  // Mock students data
+  const students: Student[] = [
     {
       id: '1',
-      studentId: 'S001',
-      name: 'นาย ก ใจดี',
-      email: 'student1@school.ac.th',
+      name: 'นายสมชาย ใจดี',
+      email: 'somchai@student.ac.th',
+      studentId: '6501001',
       phone: '081-234-5678',
-      seatNumber: '1',
-      joinedAt: '2024-10-01',
-      attendanceRate: 95,
-      lastAttendance: '2024-10-17T14:30:00',
-      status: 'active'
+      enrolledAt: '2024-01-15',
+      lastActivity: '2024-10-20',
+      attendanceRate: 92.5,
+      totalSessions: 20,
+      presentSessions: 18,
+      absentSessions: 1,
+      lateSessions: 1,
+      isActive: true
     },
     {
       id: '2',
-      studentId: 'S002',
-      name: 'นาง ข สบาย',
-      email: 'student2@school.ac.th',
-      phone: '081-234-5679',
-      seatNumber: '2',
-      joinedAt: '2024-10-01',
-      attendanceRate: 88,
-      lastAttendance: '2024-10-17T14:30:00',
-      status: 'active'
+      name: 'นางสาวสมหญิง รักเรียน',
+      email: 'somying@student.ac.th',
+      studentId: '6501002',
+      phone: '082-345-6789',
+      enrolledAt: '2024-01-15',
+      lastActivity: '2024-10-19',
+      attendanceRate: 87.5,
+      totalSessions: 20,
+      presentSessions: 17,
+      absentSessions: 2,
+      lateSessions: 1,
+      isActive: true
     },
     {
       id: '3',
-      studentId: 'S003',
-      name: 'นางสาว ค มั่นใจ',
-      email: 'student3@school.ac.th',
-      phone: '081-234-5680',
-      seatNumber: '3',
-      joinedAt: '2024-10-02',
-      attendanceRate: 78,
-      lastAttendance: '2024-10-16T14:30:00',
-      status: 'active'
-    },
-    {
-      id: '4',
-      studentId: 'S004',
-      name: 'นาย ง รู้จริง',
-      email: 'student4@school.ac.th',
-      phone: '081-234-5681',
-      seatNumber: '4',
-      joinedAt: '2024-10-03',
-      attendanceRate: 92,
-      lastAttendance: '2024-10-15T14:30:00',
-      status: 'inactive'
-    },
-    // ... more students
-  ])
-
-  const [searchTerm, setSearchTerm] = useState('')
-  const [sortBy, setSortBy] = useState('name') // name, studentId, attendanceRate, joinedAt
-  const [sortOrder, setSortOrder] = useState('asc') // asc, desc
-  const [filterStatus, setFilterStatus] = useState('all') // all, active, inactive
-  const [showAddForm, setShowAddForm] = useState(false)
-  const [selectedStudents, setSelectedStudents] = useState<string[]>([])
-
-  const [newStudent, setNewStudent] = useState({
-    studentId: '',
-    name: '',
-    email: '',
-    phone: ''
-  })
-
-  // Filter and sort students
-  const filteredStudents = students
-    .filter(student => {
-      const matchesSearch = student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           student.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           student.email.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesStatus = filterStatus === 'all' || student.status === filterStatus
-      return matchesSearch && matchesStatus
-    })
-    .sort((a, b) => {
-      let aValue = a[sortBy as keyof typeof a]
-      let bValue = b[sortBy as keyof typeof b]
-      
-      if (typeof aValue === 'string') aValue = aValue.toLowerCase()
-      if (typeof bValue === 'string') bValue = bValue.toLowerCase()
-      
-      if (sortOrder === 'asc') {
-        return aValue < bValue ? -1 : aValue > bValue ? 1 : 0
-      } else {
-        return aValue > bValue ? -1 : aValue < bValue ? 1 : 0
-      }
-    })
-
-  const handleAddStudent = () => {
-    if (newStudent.studentId && newStudent.name) {
-      const student = {
-        id: (students.length + 1).toString(),
-        studentId: newStudent.studentId,
-        name: newStudent.name,
-        email: newStudent.email || `${newStudent.studentId}@school.ac.th`,
-        phone: newStudent.phone || '',
-        seatNumber: (students.length + 1).toString(),
-        joinedAt: new Date().toISOString().split('T')[0],
-        attendanceRate: 0,
-        lastAttendance: new Date().toISOString(),
-        status: 'active' as const
-      }
-      
-      setStudents([...students, student])
-      setNewStudent({ studentId: '', name: '', email: '', phone: '' })
-      setShowAddForm(false)
+      name: 'นายทดสอบ ไม่มาเรียน',
+      email: 'test@student.ac.th',
+      studentId: '6501003',
+      enrolledAt: '2024-01-15',
+      lastActivity: '2024-10-10',
+      attendanceRate: 45.0,
+      totalSessions: 20,
+      presentSessions: 9,
+      absentSessions: 10,
+      lateSessions: 1,
+      isActive: false
     }
-  }
+  ];
 
-  const handleRemoveStudents = () => {
-    setStudents(students.filter(s => !selectedStudents.includes(s.id)))
-    setSelectedStudents([])
-  }
+  const filteredStudents = students.filter(student =>
+    student.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    student.studentId.includes(searchTerm) ||
+    student.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-  const handleToggleStatus = (studentId: string) => {
-    setStudents(prev => prev.map(s => 
-      s.id === studentId 
-        ? { ...s, status: s.status === 'active' ? 'inactive' : 'active' }
-        : s
-    ))
-  }
+  const handleMenuClick = (item: string) => {
+    setActiveMenuItem(item);
+  };
 
   const getAttendanceColor = (rate: number) => {
-    if (rate >= 90) return 'text-green-600 bg-green-100'
-    if (rate >= 80) return 'text-yellow-600 bg-yellow-100'
-    if (rate >= 70) return 'text-orange-600 bg-orange-100'
-    return 'text-red-600 bg-red-100'
-  }
+    if (rate >= 80) return 'text-green-600';
+    if (rate >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('th-TH')
-  }
+  const getStatusColor = (isActive: boolean) => {
+    return isActive ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800';
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-blue-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link href="/classrooms" className="text-blue-600 hover:text-blue-700">
-                ← กลับสู่จัดการห้องเรียน
-              </Link>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">จัดการนักเรียน</h1>
-                <p className="text-sm text-gray-500">{classroom.name} - {classroom.teacherName}</p>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-3">
-              {selectedStudents.length > 0 && (
-                <button
-                  onClick={handleRemoveStudents}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                >
-                  ลบ ({selectedStudents.length})
-                </button>
-              )}
-              <button
-                onClick={() => setShowAddForm(true)}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors flex items-center space-x-2"
-              >
-                <span>+</span>
-                <span>เพิ่มนักเรียน</span>
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Stats Overview */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{students.length}</div>
-            <div className="text-sm text-gray-500">นักเรียนทั้งหมด</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">
-              {students.filter(s => s.status === 'active').length}
-            </div>
-            <div className="text-sm text-gray-500">กำลังเรียน</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-orange-600">
-              {Math.round(students.reduce((sum, s) => sum + s.attendanceRate, 0) / students.length)}%
-            </div>
-            <div className="text-sm text-gray-500">อัตราเข้าเรียนเฉลี่ย</div>
-          </div>
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-purple-600">
-              {students.filter(s => s.attendanceRate >= 90).length}
-            </div>
-            <div className="text-sm text-gray-500">เข้าเรียนดี (&gt;90%)</div>
-          </div>
-        </div>
-
-        {/* Search and Filter */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="grid md:grid-cols-4 gap-4">
-            <div className="md:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                ค้นหานักเรียน
-              </label>
-              <div className="relative">
-                <input
-                  type="text"
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                  placeholder="ค้นหาชื่อ, รหัสนักเรียน, อีเมล..."
-                />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            
+    <TeacherLayout
+      title={`จัดการนักเรียน - ${classroom.name}`}
+      subtitle={`รายชื่อนักเรียนในห้องเรียน รหัส: ${classroom.code}`}
+      activeMenuItem={activeMenuItem}
+      onMenuItemClick={handleMenuClick}
+    >
+      {/* Statistics Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                จัดเรียงตาม
-              </label>
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-              >
-                <option value="name">ชื่อ</option>
-                <option value="studentId">รหัสนักเรียน</option>
-                <option value="attendanceRate">อัตราเข้าเรียน</option>
-                <option value="joinedAt">วันที่เข้าร่วม</option>
-              </select>
+              <p className="text-sm font-medium text-gray-600">นักเรียนทั้งหมด</p>
+              <p className="text-2xl font-bold text-blue-600">{students.length}</p>
             </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                สถานะ
-              </label>
-              <select
-                value={filterStatus}
-                onChange={(e) => setFilterStatus(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-              >
-                <option value="all">ทั้งหมด</option>
-                <option value="active">กำลังเรียน</option>
-                <option value="inactive">ไม่ได้เรียน</option>
-              </select>
-            </div>
+            <Users className="h-8 w-8 text-blue-600" />
           </div>
         </div>
 
-        {/* Students Table */}
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-bold text-gray-900">
-                รายชื่อนักเรียน ({filteredStudents.length} คน)
-              </h3>
-              <div className="flex items-center space-x-2">
-                <button
-                  onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
-                  className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                  title={`เรียงจาก ${sortOrder === 'asc' ? 'น้อยไปมาก' : 'มากไปน้อย'}`}
-                >
-                  <svg className={`w-4 h-4 transform ${sortOrder === 'desc' ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                  </svg>
-                </button>
-              </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">ใช้งานอยู่</p>
+              <p className="text-2xl font-bold text-green-600">
+                {students.filter(s => s.isActive).length}
+              </p>
             </div>
+            <CheckCircle className="h-8 w-8 text-green-600" />
           </div>
+        </div>
 
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    <input
-                      type="checkbox"
-                      checked={selectedStudents.length === filteredStudents.length && filteredStudents.length > 0}
-                      onChange={(e) => {
-                        if (e.target.checked) {
-                          setSelectedStudents(filteredStudents.map(s => s.id))
-                        } else {
-                          setSelectedStudents([])
-                        }
-                      }}
-                      className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                    />
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    นักเรียน
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ติดต่อ
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    อัตราเข้าเรียน
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    เข้าร่วมเมื่อ
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    สถานะ
-                  </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    การกระทำ
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {filteredStudents.map((student) => (
-                  <tr key={student.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <input
-                        type="checkbox"
-                        checked={selectedStudents.includes(student.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedStudents([...selectedStudents, student.id])
-                          } else {
-                            setSelectedStudents(selectedStudents.filter(id => id !== student.id))
-                          }
-                        }}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-medium text-blue-600">
-                            {student.seatNumber}
-                          </span>
-                        </div>
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">{student.name}</div>
-                          <div className="text-sm text-gray-500">รหัส: {student.studentId}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{student.email}</div>
-                      <div className="text-sm text-gray-500">{student.phone || 'ไม่ระบุ'}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getAttendanceColor(student.attendanceRate)}`}>
-                        {student.attendanceRate}%
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(student.joinedAt)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        student.status === 'active' 
-                          ? 'bg-green-100 text-green-800' 
-                          : 'bg-gray-100 text-gray-800'
-                      }`}>
-                        {student.status === 'active' ? 'กำลังเรียน' : 'ไม่ได้เรียน'}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <div className="flex space-x-2">
-                        <button
-                          onClick={() => handleToggleStatus(student.id)}
-                          className={`px-3 py-1 rounded text-xs transition-colors ${
-                            student.status === 'active'
-                              ? 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200'
-                              : 'bg-green-100 text-green-800 hover:bg-green-200'
-                          }`}
-                        >
-                          {student.status === 'active' ? 'หยุดเรียน' : 'กลับมาเรียน'}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {filteredStudents.length === 0 && (
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl text-gray-400">👥</span>
-              </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">ไม่พบนักเรียน</h3>
-              <p className="text-gray-500">ลองเปลี่ยนคำค้นหาหรือตัวกรอง</p>
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">เข้าเรียนเฉลี่ย</p>
+              <p className="text-2xl font-bold text-purple-600">
+                {(students.reduce((sum, s) => sum + s.attendanceRate, 0) / students.length).toFixed(1)}%
+              </p>
             </div>
-          )}
+            <Calendar className="h-8 w-8 text-purple-600" />
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">เสี่ยงไม่ผ่าน</p>
+              <p className="text-2xl font-bold text-red-600">
+                {students.filter(s => s.attendanceRate < 60).length}
+              </p>
+            </div>
+            <AlertTriangle className="h-8 w-8 text-red-600" />
+          </div>
         </div>
       </div>
 
-      {/* Add Student Modal */}
-      {showAddForm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl p-8 w-full max-w-md">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">เพิ่มนักเรียนใหม่</h2>
-            
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  รหัสนักเรียน *
-                </label>
-                <input
-                  type="text"
-                  value={newStudent.studentId}
-                  onChange={(e) => setNewStudent({...newStudent, studentId: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                  placeholder="เช่น S001, S002"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  ชื่อ-นามสกุล *
-                </label>
-                <input
-                  type="text"
-                  value={newStudent.name}
-                  onChange={(e) => setNewStudent({...newStudent, name: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                  placeholder="เช่น นาย สมชาย ใจดี"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  อีเมล
-                </label>
-                <input
-                  type="email"
-                  value={newStudent.email}
-                  onChange={(e) => setNewStudent({...newStudent, email: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                  placeholder="student@school.ac.th"
-                />
-              </div>
-              
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  เบอร์โทรศัพท์
-                </label>
-                <input
-                  type="tel"
-                  value={newStudent.phone}
-                  onChange={(e) => setNewStudent({...newStudent, phone: e.target.value})}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
-                  placeholder="081-234-5678"
-                />
-              </div>
-            </div>
-
-            <div className="flex space-x-3 mt-6">
-              <button
-                onClick={() => setShowAddForm(false)}
-                className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 px-4 rounded-lg font-medium transition-colors"
-              >
-                ยกเลิก
-              </button>
-              <button
-                onClick={handleAddStudent}
-                disabled={!newStudent.studentId || !newStudent.name}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-2 px-4 rounded-lg font-medium transition-colors"
-              >
-                เพิ่ม
-              </button>
-            </div>
+      {/* Header Actions */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div className="flex-1 max-w-md">
+          <div className="relative">
+            <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="ค้นหานักเรียน..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
           </div>
         </div>
+        
+        <div className="flex items-center space-x-2">
+          <button
+            onClick={() => setShowBulkModal(true)}
+            className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
+          >
+            <Upload className="h-4 w-4" />
+            <span>นำเข้าจาก CSV</span>
+          </button>
+          <button className="flex items-center space-x-2 px-3 py-2 border border-gray-300 rounded-lg hover:bg-gray-50">
+            <Download className="h-4 w-4" />
+            <span>ส่งออก</span>
+          </button>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            <span>เพิ่มนักเรียน</span>
+          </button>
+        </div>
+      </div>
+
+      {/* Students Table */}
+      <div className="bg-white rounded-lg shadow">
+        <div className="p-6 border-b border-gray-200">
+          <h2 className="text-lg font-semibold text-gray-900">รายชื่อนักเรียน</h2>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  นักเรียน
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  รหัสนักเรียน
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  การเข้าเรียน
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  สถานะ
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  กิจกรรมล่าสุด
+                </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  การจัดการ
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredStudents.map((student) => (
+                <tr key={student.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="flex items-center">
+                      <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                        <span className="text-sm font-medium text-gray-700">
+                          {student.name.charAt(0)}
+                        </span>
+                      </div>
+                      <div className="ml-4">
+                        <div className="text-sm font-medium text-gray-900">
+                          {student.name}
+                        </div>
+                        <div className="text-sm text-gray-500 flex items-center space-x-4">
+                          <span className="flex items-center space-x-1">
+                            <Mail className="h-3 w-3" />
+                            <span>{student.email}</span>
+                          </span>
+                          {student.phone && (
+                            <span className="flex items-center space-x-1">
+                              <Phone className="h-3 w-3" />
+                              <span>{student.phone}</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">
+                      {student.studentId}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm">
+                      <div className={`font-medium ${getAttendanceColor(student.attendanceRate)}`}>
+                        {student.attendanceRate.toFixed(1)}%
+                      </div>
+                      <div className="text-gray-500 text-xs">
+                        มา {student.presentSessions} / ขาด {student.absentSessions} / สาย {student.lateSessions}
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(student.isActive)}`}>
+                      {student.isActive ? 'ใช้งาน' : 'ไม่ใช้งาน'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(student.lastActivity).toLocaleDateString('th-TH')}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <div className="relative">
+                      <button
+                        onClick={() => setSelectedStudent(
+                          selectedStudent === student.id ? null : student.id
+                        )}
+                        className="p-1 hover:bg-gray-100 rounded-full"
+                      >
+                        <MoreVertical className="h-4 w-4 text-gray-500" />
+                      </button>
+                      
+                      {selectedStudent === student.id && (
+                        <div className="absolute right-0 top-8 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
+                          <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2">
+                            <Edit className="h-4 w-4" />
+                            <span>แก้ไขข้อมูล</span>
+                          </button>
+                          <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2">
+                            <Calendar className="h-4 w-4" />
+                            <span>ดูประวัติการเข้าเรียน</span>
+                          </button>
+                          <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2">
+                            <Mail className="h-4 w-4" />
+                            <span>ส่งแจ้งเตือน</span>
+                          </button>
+                          <hr className="my-1" />
+                          <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 text-red-600 flex items-center space-x-2">
+                            <Trash2 className="h-4 w-4" />
+                            <span>ลบออกจากห้อง</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {filteredStudents.length === 0 && (
+        <div className="text-center py-12">
+          <div className="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Users className="h-8 w-8 text-gray-400" />
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-2">ไม่พบนักเรียน</h3>
+          <p className="text-gray-600 mb-4">
+            {searchTerm ? 'ไม่มีนักเรียนที่ตรงกับคำค้นหา' : 'ยังไม่มีนักเรียนในห้องเรียนนี้'}
+          </p>
+          <button
+            onClick={() => setShowAddModal(true)}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
+          >
+            เพิ่มนักเรียนคนแรก
+          </button>
+        </div>
       )}
+
+      {/* Add Student Modal */}
+      {showAddModal && (
+        <AddStudentModal
+          onClose={() => setShowAddModal(false)}
+          onSubmit={(data) => {
+            console.log('Adding student:', data);
+            setShowAddModal(false);
+          }}
+        />
+      )}
+
+      {/* Bulk Import Modal */}
+      {showBulkModal && (
+        <BulkImportModal
+          onClose={() => setShowBulkModal(false)}
+          onSubmit={(data) => {
+            console.log('Bulk importing:', data);
+            setShowBulkModal(false);
+          }}
+        />
+      )}
+    </TeacherLayout>
+  );
+}
+
+// Add Student Modal Component
+interface AddStudentModalProps {
+  onClose: () => void;
+  onSubmit: (data: any) => void;
+}
+
+function AddStudentModal({ onClose, onSubmit }: AddStudentModalProps) {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    studentId: '',
+    phone: ''
+  });
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(formData);
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-6 border w-full max-w-md shadow-lg rounded-lg bg-white">
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">เพิ่มนักเรียนใหม่</h3>
+          <p className="text-sm text-gray-600">กรอกข้อมูลนักเรียนที่จะเพิ่มเข้าห้องเรียน</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              ชื่อ-นามสกุล *
+            </label>
+            <input
+              type="text"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="นายสมชาย ใจดี"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              รหัสนักเรียน *
+            </label>
+            <input
+              type="text"
+              value={formData.studentId}
+              onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="6501001"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              อีเมล *
+            </label>
+            <input
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="student@example.com"
+              required
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              เบอร์โทรศัพท์
+            </label>
+            <input
+              type="tel"
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              placeholder="081-234-5678"
+            />
+          </div>
+
+          <div className="flex justify-end space-x-3 pt-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+            >
+              ยกเลิก
+            </button>
+            <button
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            >
+              เพิ่มนักเรียน
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  )
+  );
+}
+
+// Bulk Import Modal Component
+interface BulkImportModalProps {
+  onClose: () => void;
+  onSubmit: (data: any) => void;
+}
+
+function BulkImportModal({ onClose, onSubmit }: BulkImportModalProps) {
+  const [dragOver, setDragOver] = useState(false);
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setDragOver(false);
+    // Handle file drop
+  };
+
+  return (
+    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-6 border w-full max-w-lg shadow-lg rounded-lg bg-white">
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">นำเข้ารายชื่อจาก CSV</h3>
+          <p className="text-sm text-gray-600">อัปโหลดไฟล์ CSV ที่มีรายชื่อนักเรียน</p>
+        </div>
+
+        <div className="space-y-4">
+          {/* File Upload Area */}
+          <div
+            className={`border-2 border-dashed rounded-lg p-8 text-center ${
+              dragOver ? 'border-blue-500 bg-blue-50' : 'border-gray-300'
+            }`}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOver(true);
+            }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={handleDrop}
+          >
+            <Upload className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+            <p className="text-gray-600 mb-2">ลากไฟล์มาวางที่นี่ หรือ</p>
+            <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+              เลือกไฟล์
+            </button>
+            <p className="text-xs text-gray-500 mt-2">รองรับไฟล์ .csv เท่านั้น</p>
+          </div>
+
+          {/* CSV Template */}
+          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+            <h4 className="text-sm font-medium text-gray-900 mb-2">รูปแบบไฟล์ CSV:</h4>
+            <div className="bg-white border rounded p-2 text-xs font-mono">
+              name,student_id,email,phone<br />
+              นายสมชาย ใจดี,6501001,somchai@student.ac.th,081-234-5678<br />
+              นางสาวสมหญิง รักเรียน,6501002,somying@student.ac.th,082-345-6789
+            </div>
+            <button className="text-blue-600 hover:text-blue-700 text-sm mt-2">
+              ดาวน์โหลดแบบฟอร์ม CSV
+            </button>
+          </div>
+        </div>
+
+        <div className="flex justify-end space-x-3 pt-6">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          >
+            ยกเลิก
+          </button>
+          <button
+            onClick={() => onSubmit({})}
+            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
+            นำเข้าข้อมูล
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 }

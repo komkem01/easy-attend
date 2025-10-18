@@ -1,222 +1,279 @@
-'use client'
+'use client';
 
-import { useState } from 'react'
-import Link from 'next/link'
+import React, { useState } from 'react';
+import TeacherLayout from '@/components/TeacherLayout';
+import { 
+  Users, 
+  BookOpen, 
+  Calendar, 
+  FileText, 
+  TrendingUp, 
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  BarChart3,
+  Plus
+} from 'lucide-react';
+
+interface DashboardStats {
+  totalClassrooms: number;
+  totalStudents: number;
+  todayAttendance: number;
+  pendingAssignments: number;
+  recentActivities: Array<{
+    id: string;
+    type: 'attendance' | 'assignment' | 'grade';
+    message: string;
+    time: string;
+    className: string;
+  }>;
+}
 
 export default function Dashboard() {
-  const [userRole] = useState('teacher') // จะมาจาก auth context จริงๆ
-  const [user] = useState({
-    name: 'อาจารย์สมชาย ใจดี',
-    school: 'โรงเรียนสาธิตมหาวิทยาลัย',
-    role: 'teacher'
-  })
-  const [showLogoutModal, setShowLogoutModal] = useState(false)
+  const [activeMenuItem, setActiveMenuItem] = useState('dashboard');
 
-  const handleLogout = () => {
-    setShowLogoutModal(true)
-  }
+  // Mock data - ในการใช้งานจริงจะดึงจาก API
+  const stats: DashboardStats = {
+    totalClassrooms: 5,
+    totalStudents: 147,
+    todayAttendance: 92,
+    pendingAssignments: 23,
+    recentActivities: [
+      {
+        id: '1',
+        type: 'attendance',
+        message: 'เช็คชื่อวิชาคณิตศาสตร์ ม.3/1 เสร็จสิ้น',
+        time: '10:30',
+        className: 'คณิตศาสตร์ ม.3/1'
+      },
+      {
+        id: '2',
+        type: 'assignment',
+        message: 'งานใหม่: แบบฝึกหัดบทที่ 5',
+        time: '09:15',
+        className: 'คณิตศาสตร์ ม.3/2'
+      },
+      {
+        id: '3',
+        type: 'grade',
+        message: 'ตรวจงานเสร็จ 15 คน',
+        time: '08:45',
+        className: 'ฟิสิกส์ ม.5/1'
+      }
+    ]
+  };
 
-  const confirmLogout = () => {
-    // จริงๆ จะเรียก logout API และ redirect
-    console.log('Logging out...')
-    // Example: router.push('/login')
-    alert('ออกจากระบบเรียบร้อยแล้ว')
-    setShowLogoutModal(false)
-  }
+  const quickActions = [
+    {
+      title: 'เช็คชื่อใหม่',
+      description: 'เปิดรอบเช็คชื่อสำหรับห้องเรียน',
+      icon: Users,
+      color: 'bg-blue-500',
+      href: '/attendance/create'
+    },
+    {
+      title: 'สร้างงานใหม่',
+      description: 'มอบหมายงานให้นักเรียน',
+      icon: FileText,
+      color: 'bg-green-500',
+      href: '/assignments/create'
+    },
+    {
+      title: 'สร้างห้องเรียน',
+      description: 'เพิ่มห้องเรียนใหม่',
+      icon: BookOpen,
+      color: 'bg-purple-500',
+      href: '/classrooms/create'
+    },
+    {
+      title: 'ดูรายงาน',
+      description: 'สรุปผลการเรียนและการเข้าเรียน',
+      icon: BarChart3,
+      color: 'bg-orange-500',
+      href: '/reports'
+    }
+  ];
+
+  const handleMenuClick = (item: string) => {
+    setActiveMenuItem(item);
+    // ในการใช้งานจริงจะใช้ router.push()
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-blue-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">EA</span>
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-gray-900">Easy Attend</h1>
-                <p className="text-sm text-gray-500">{user.school}</p>
-              </div>
+    <TeacherLayout
+      title="แดชบอร์ด"
+      subtitle="ภาพรวมการจัดการเรียนการสอน"
+      activeMenuItem={activeMenuItem}
+      onMenuItemClick={handleMenuClick}
+    >
+      {/* สถิติหลัก */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">ห้องเรียนทั้งหมด</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalClassrooms}</p>
             </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">สวัสดี, {user.name}</span>
-              <button 
-                onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm transition-colors flex items-center space-x-2"
-              >
-                <span>🚪</span>
-                <span>ออกจากระบบ</span>
-              </button>
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <BookOpen className="h-6 w-6 text-blue-600" />
             </div>
           </div>
         </div>
-      </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Welcome Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
-            ยินดีต้อนรับ {userRole === 'teacher' ? 'ครู' : 'นักเรียน'}{user.name}
-          </h2>
-          <p className="text-gray-600 mb-4">
-            ระบบเช็คชื่อออนไลน์ - {user.school}
-          </p>
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <p className="text-blue-800 text-sm">
-              📅 วันนี้: {new Date().toLocaleDateString('th-TH', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
-              })}
-            </p>
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">นักเรียนทั้งหมด</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.totalStudents}</p>
+            </div>
+            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <Users className="h-6 w-6 text-green-600" />
+            </div>
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {userRole === 'teacher' ? (
-            <>
-              <Link href="/classrooms" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <span className="text-2xl">🏛️</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">จัดการห้องเรียน</h3>
-                    <p className="text-gray-600 text-sm">สร้างห้องเรียน เพิ่มนักเรียน</p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link href="/attendance/create" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                    <span className="text-2xl">✅</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">เปิดเช็คชื่อ</h3>
-                    <p className="text-gray-600 text-sm">เริ่มรอบเช็คชื่อใหม่</p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link href="/reports" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center group-hover:bg-purple-200 transition-colors">
-                    <span className="text-2xl">📊</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">รายงานการเข้าเรียน</h3>
-                    <p className="text-gray-600 text-sm">ดูสถิติและรายงาน</p>
-                  </div>
-                </div>
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link href="/attendance/join" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
-                    <span className="text-2xl">✅</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">เช็คชื่อ</h3>
-                    <p className="text-gray-600 text-sm">เข้าร่วมรอบเช็คชื่อ</p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link href="/my-attendance" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center group-hover:bg-blue-200 transition-colors">
-                    <span className="text-2xl">📋</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">ประวัติการเข้าเรียน</h3>
-                    <p className="text-gray-600 text-sm">ดูประวัติของฉัน</p>
-                  </div>
-                </div>
-              </Link>
-
-              <Link href="/classrooms" className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow group">
-                <div className="flex items-center space-x-4">
-                  <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200 transition-colors">
-                    <span className="text-2xl">🏛️</span>
-                  </div>
-                  <div>
-                    <h3 className="text-lg font-semibold text-gray-900">ห้องเรียนของฉัน</h3>
-                    <p className="text-gray-600 text-sm">ดูห้องเรียนที่เข้าร่วม</p>
-                  </div>
-                </div>
-              </Link>
-            </>
-          )}
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">เข้าเรียนวันนี้</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.todayAttendance}%</p>
+            </div>
+            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+              <TrendingUp className="h-6 w-6 text-yellow-600" />
+            </div>
+          </div>
         </div>
 
-        {/* Recent Activity */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h3 className="text-xl font-bold text-gray-900 mb-4">กิจกรรมล่าสุด</h3>
-          <div className="space-y-3">
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <span className="text-green-600 text-sm">✓</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">
-                  {userRole === 'teacher' ? 'เปิดรอบเช็คชื่อ' : 'เช็คชื่อเรียบร้อย'} - วิชาคณิตศาสตร์ ม.6/1
-                </p>
-                <p className="text-xs text-gray-500">10 นาทีที่แล้ว</p>
-              </div>
+        <div className="bg-white rounded-lg shadow p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">งานรอตรวจ</p>
+              <p className="text-2xl font-bold text-gray-900">{stats.pendingAssignments}</p>
             </div>
-            <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <span className="text-blue-600 text-sm">📝</span>
-              </div>
-              <div className="flex-1">
-                <p className="text-sm font-medium text-gray-900">
-                  {userRole === 'teacher' ? 'สร้างห้องเรียนใหม่' : 'เข้าร่วมห้องเรียนใหม่'} - ฟิสิกส์ ม.5/2
-                </p>
-                <p className="text-xs text-gray-500">2 ชั่วโมงที่แล้ว</p>
-              </div>
+            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <FileText className="h-6 w-6 text-red-600" />
             </div>
           </div>
         </div>
       </div>
 
-      {/* Logout Confirmation Modal */}
-      {showLogoutModal && (
-        <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-          <div className="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-            <div className="mt-3">
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
-                <span className="text-2xl">🚪</span>
-              </div>
-              <h3 className="text-lg font-bold text-gray-900 text-center mb-4">ยืนยันการออกจากระบบ</h3>
-              <p className="text-sm text-gray-500 text-center mb-6">
-                คุณแน่ใจหรือไม่ที่จะออกจากระบบ?
-                <br />
-                คุณจะต้องเข้าสู่ระบบใหม่อีกครั้ง
-              </p>
-              <div className="flex justify-center space-x-3">
-                <button
-                  onClick={() => setShowLogoutModal(false)}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-colors"
-                >
-                  ยกเลิก
-                </button>
-                <button
-                  onClick={confirmLogout}
-                  className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                >
-                  ออกจากระบบ
-                </button>
-              </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* การดำเนินการด่วน */}
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">การดำเนินการด่วน</h2>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {quickActions.map((action, index) => {
+                const Icon = action.icon;
+                return (
+                  <button
+                    key={index}
+                    className="p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors text-left"
+                  >
+                    <div className={`w-10 h-10 ${action.color} rounded-lg flex items-center justify-center mb-3`}>
+                      <Icon className="h-5 w-5 text-white" />
+                    </div>
+                    <h3 className="font-medium text-gray-900 mb-1">{action.title}</h3>
+                    <p className="text-sm text-gray-600">{action.description}</p>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </div>
-      )}
-    </div>
-  )
+
+        {/* กิจกรรมล่าสุด */}
+        <div className="bg-white rounded-lg shadow">
+          <div className="p-6 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">กิจกรรมล่าสุด</h2>
+          </div>
+          <div className="p-6">
+            <div className="space-y-4">
+              {stats.recentActivities.map((activity) => {
+                const getIcon = () => {
+                  switch (activity.type) {
+                    case 'attendance':
+                      return <CheckCircle className="h-5 w-5 text-green-500" />;
+                    case 'assignment':
+                      return <FileText className="h-5 w-5 text-blue-500" />;
+                    case 'grade':
+                      return <BarChart3 className="h-5 w-5 text-purple-500" />;
+                    default:
+                      return <Clock className="h-5 w-5 text-gray-500" />;
+                  }
+                };
+
+                return (
+                  <div key={activity.id} className="flex items-start space-x-3">
+                    <div className="flex-shrink-0">
+                      {getIcon()}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium text-gray-900">
+                        {activity.message}
+                      </p>
+                      <p className="text-sm text-gray-500">
+                        {activity.className} • {activity.time}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ห้องเรียนที่ต้องดูแล */}
+      <div className="mt-8 bg-white rounded-lg shadow">
+        <div className="p-6 border-b border-gray-200">
+          <div className="flex items-center justify-between">
+            <h2 className="text-lg font-semibold text-gray-900">ห้องเรียนที่ต้องดูแล</h2>
+            <button className="text-blue-600 hover:text-blue-700 font-medium">
+              ดูทั้งหมด
+            </button>
+          </div>
+        </div>
+        <div className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* ตัวอย่างการ์ดห้องเรียน */}
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="border border-gray-200 rounded-lg p-4 hover:border-gray-300 transition-colors">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="font-medium text-gray-900">คณิตศาสตร์ ม.3/{i}</h3>
+                  <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                    ใช้งาน
+                  </span>
+                </div>
+                <div className="space-y-2 text-sm text-gray-600">
+                  <div className="flex justify-between">
+                    <span>นักเรียน:</span>
+                    <span>32 คน</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>เข้าเรียนวันนี้:</span>
+                    <span>28 คน (87.5%)</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>งานรอตรวจ:</span>
+                    <span>8 งาน</span>
+                  </div>
+                </div>
+                <div className="mt-4 flex space-x-2">
+                  <button className="flex-1 bg-blue-50 text-blue-600 py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-100">
+                    เช็คชื่อ
+                  </button>
+                  <button className="flex-1 bg-gray-50 text-gray-600 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-100">
+                    ดูรายละเอียด
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </TeacherLayout>
+  );
 }

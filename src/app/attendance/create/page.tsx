@@ -1,310 +1,321 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import React, { useState } from 'react';
+import TeacherLayout from '@/components/TeacherLayout';
+import { 
+  Calendar, 
+  Clock, 
+  Users, 
+  Settings, 
+  Plus,
+  Save,
+  ArrowLeft,
+  AlertCircle,
+  CheckCircle
+} from 'lucide-react';
 
-interface Student {
-  id: string
-  name: string
-  status: 'waiting' | 'present' | 'absent' | 'late' | 'excused'
+interface AttendanceSessionForm {
+  classroomId: string;
+  title: string;
+  description: string;
+  sessionDate: string;
+  startTime: string;
+  endTime: string;
+  allowLateCheck: boolean;
+  lateThreshold: number;
 }
 
 export default function CreateAttendancePage() {
-  const [selectedClassroom, setSelectedClassroom] = useState('')
-  const [attendanceType, setAttendanceType] = useState('button') // button, qr, code
-  const [sessionCode, setSessionCode] = useState('')
-  const [isActive, setIsActive] = useState(false)
-  const [attendanceList, setAttendanceList] = useState<Student[]>([])
-  
+  const [activeMenuItem, setActiveMenuItem] = useState('attendance');
+  const [formData, setFormData] = useState<AttendanceSessionForm>({
+    classroomId: '',
+    title: '',
+    description: '',
+    sessionDate: new Date().toISOString().split('T')[0],
+    startTime: '',
+    endTime: '',
+    allowLateCheck: true,
+    lateThreshold: 15
+  });
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  // Mock classrooms data
   const classrooms = [
-    { id: '1', name: 'คณิตศาสตร์ ม.6/1', studentCount: 32 },
-    { id: '2', name: 'ฟิสิกส์ ม.5/2', studentCount: 28 }
-  ]
+    { id: '1', name: 'คณิตศาสตร์ ม.3/1', subject: 'คณิตศาสตร์', studentsCount: 32 },
+    { id: '2', name: 'ฟิสิกส์ ม.5/1', subject: 'ฟิสิกส์', studentsCount: 28 },
+    { id: '3', name: 'เคมี ม.4/2', subject: 'เคมี', studentsCount: 30 }
+  ];
 
-  // Generate random session code
-  const generateSessionCode = () => {
-    return Math.random().toString(36).substring(2, 8).toUpperCase()
-  }
-
-  const startAttendanceSession = () => {
-    if (!selectedClassroom) return
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log('Creating attendance session:', formData);
     
-    const code = generateSessionCode()
-    setSessionCode(code)
-    setIsActive(true)
-    
-    // Initialize attendance list
-    setAttendanceList([
-      { id: '1', name: 'นาย ก ใจดี', status: 'waiting' },
-      { id: '2', name: 'นาง ข สบาย', status: 'present' },
-      { id: '3', name: 'นางสาว ค มั่นใจ', status: 'waiting' },
-      // ... more students
-    ])
-  }
+    // ในการใช้งานจริงจะเรียก API
+    setTimeout(() => {
+      setShowSuccess(true);
+      setTimeout(() => {
+        setShowSuccess(false);
+        // Redirect to attendance management or classroom detail
+      }, 2000);
+    }, 1000);
+  };
 
-  const endAttendanceSession = () => {
-    setIsActive(false)
-  }
-
-  const updateStudentStatus = (studentId: string, status: Student['status']) => {
-    setAttendanceList(prev => 
-      prev.map(student => 
-        student.id === studentId ? { ...student, status } : student
-      )
-    )
-  }
-
-  const getStatusColor = (status: Student['status']) => {
-    switch (status) {
-      case 'present': return 'bg-green-100 text-green-800 border-green-200'
-      case 'absent': return 'bg-red-100 text-red-800 border-red-200'
-      case 'late': return 'bg-yellow-100 text-yellow-800 border-yellow-200'
-      case 'excused': return 'bg-blue-100 text-blue-800 border-blue-200'
-      default: return 'bg-gray-100 text-gray-800 border-gray-200'
-    }
-  }
-
-  const getStatusText = (status: Student['status']) => {
-    switch (status) {
-      case 'present': return 'มา'
-      case 'absent': return 'ขาด'
-      case 'late': return 'สาย'
-      case 'excused': return 'ลา'
-      default: return 'รอเช็คชื่อ'
-    }
-  }
+  const handleMenuClick = (item: string) => {
+    setActiveMenuItem(item);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-blue-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-blue-600 hover:text-blue-700">
-                ← กลับสู่หน้าหลัก
-              </Link>
-              <h1 className="text-xl font-bold text-gray-900">
-                {isActive ? 'กำลังเช็คชื่อ' : 'เปิดรอบเช็คชื่อ'}
-              </h1>
-            </div>
-            {isActive && (
-              <div className="flex items-center space-x-4">
-                <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                  ● กำลังดำเนินการ
-                </div>
-                <button
-                  onClick={endAttendanceSession}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
-                >
-                  ปิดรอบเช็คชื่อ
-                </button>
-              </div>
-            )}
-          </div>
+    <TeacherLayout
+      title="เปิดรอบเช็คชื่อ"
+      subtitle="สร้างรอบเช็คชื่อใหม่สำหรับห้องเรียน"
+      activeMenuItem={activeMenuItem}
+      onMenuItemClick={handleMenuClick}
+    >
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <button className="flex items-center text-gray-600 hover:text-gray-800 mb-4">
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            กลับไปหน้าเช็คชื่อ
+          </button>
         </div>
-      </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {!isActive ? (
-          // Setup Form
-          <div className="max-w-2xl mx-auto">
-            <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">ตั้งค่ารอบเช็คชื่อใหม่</h2>
-              
-              <div className="space-y-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Form */}
+          <div className="lg:col-span-2">
+            <div className="bg-white rounded-lg shadow border border-gray-200">
+              <div className="p-6 border-b border-gray-200">
+                <h2 className="text-lg font-semibold text-gray-900">ข้อมูลรอบเช็คชื่อ</h2>
+                <p className="text-sm text-gray-600">กรอกรายละเอียดการเช็คชื่อที่จะเปิด</p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="p-6 space-y-6">
+                {/* Classroom Selection */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    เลือกห้องเรียน
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    เลือกห้องเรียน *
                   </label>
                   <select
-                    value={selectedClassroom}
-                    onChange={(e) => setSelectedClassroom(e.target.value)}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                    value={formData.classroomId}
+                    onChange={(e) => setFormData({ ...formData, classroomId: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    required
                   >
-                    <option value="">-- เลือกห้องเรียน --</option>
-                    {classrooms.map(classroom => (
+                    <option value="">เลือกห้องเรียน</option>
+                    {classrooms.map((classroom) => (
                       <option key={classroom.id} value={classroom.id}>
-                        {classroom.name} ({classroom.studentCount} คน)
+                        {classroom.name} ({classroom.studentsCount} คน)
                       </option>
                     ))}
                   </select>
                 </div>
 
+                {/* Session Title */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-3">
-                    วิธีการเช็คชื่อ
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    หัวข้อการเช็คชื่อ *
                   </label>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div 
-                      onClick={() => setAttendanceType('button')}
-                      className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                        attendanceType === 'button' 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <span className="text-2xl mb-2 block">👆</span>
-                        <h3 className="font-medium text-gray-900">กดปุ่ม</h3>
-                        <p className="text-sm text-gray-500">นักเรียนกดปุ่มเช็คชื่อ</p>
-                      </div>
-                    </div>
+                  <input
+                    type="text"
+                    value={formData.title}
+                    onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="เช่น เช็คชื่อบทที่ 5: สมการกำลังสอง"
+                    required
+                  />
+                </div>
 
-                    <div 
-                      onClick={() => setAttendanceType('qr')}
-                      className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                        attendanceType === 'qr' 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <span className="text-2xl mb-2 block">📱</span>
-                        <h3 className="font-medium text-gray-900">QR Code</h3>
-                        <p className="text-sm text-gray-500">สแกน QR Code</p>
-                      </div>
-                    </div>
+                {/* Description */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    รายละเอียดเพิ่มเติม
+                  </label>
+                  <textarea
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    rows={3}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="อธิบายเกี่ยวกับการเช็คชื่อครั้งนี้..."
+                  />
+                </div>
 
-                    <div 
-                      onClick={() => setAttendanceType('code')}
-                      className={`p-4 border-2 rounded-lg cursor-pointer transition-colors ${
-                        attendanceType === 'code' 
-                          ? 'border-blue-500 bg-blue-50' 
-                          : 'border-gray-200 hover:border-gray-300'
-                      }`}
-                    >
-                      <div className="text-center">
-                        <span className="text-2xl mb-2 block">🔢</span>
-                        <h3 className="font-medium text-gray-900">รหัส</h3>
-                        <p className="text-sm text-gray-500">ป้อนรหัสเช็คชื่อ</p>
-                      </div>
-                    </div>
+                {/* Date and Time */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      วันที่ *
+                    </label>
+                    <input
+                      type="date"
+                      value={formData.sessionDate}
+                      onChange={(e) => setFormData({ ...formData, sessionDate: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      เวลาเริ่ม *
+                    </label>
+                    <input
+                      type="time"
+                      value={formData.startTime}
+                      onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      เวลาสิ้นสุด *
+                    </label>
+                    <input
+                      type="time"
+                      value={formData.endTime}
+                      onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      required
+                    />
                   </div>
                 </div>
 
-                <button
-                  onClick={startAttendanceSession}
-                  disabled={!selectedClassroom}
-                  className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed text-white py-3 px-6 rounded-lg font-medium text-lg transition-colors"
-                >
-                  เริ่มรอบเช็คชื่อ
-                </button>
-              </div>
+                {/* Late Check Settings */}
+                <div className="border border-gray-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">การเช็คชื่อสาย</h3>
+                      <p className="text-sm text-gray-600">อนุญาตให้นักเรียนเช็คชื่อหลังเวลาที่กำหนด</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={formData.allowLateCheck}
+                        onChange={(e) => setFormData({ ...formData, allowLateCheck: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                    </label>
+                  </div>
+
+                  {formData.allowLateCheck && (
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        ระยะเวลาที่อนุญาตให้เช็คชื่อสาย (นาที)
+                      </label>
+                      <select
+                        value={formData.lateThreshold}
+                        onChange={(e) => setFormData({ ...formData, lateThreshold: parseInt(e.target.value) })}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        <option value={5}>5 นาที</option>
+                        <option value={10}>10 นาที</option>
+                        <option value={15}>15 นาที</option>
+                        <option value={30}>30 นาที</option>
+                        <option value={60}>1 ชั่วโมง</option>
+                      </select>
+                    </div>
+                  )}
+                </div>
+
+                {/* Submit Buttons */}
+                <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                  <button
+                    type="button"
+                    className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center space-x-2"
+                  >
+                    <Save className="h-4 w-4" />
+                    <span>เปิดรอบเช็คชื่อ</span>
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
-        ) : (
-          // Active Session
-          <div className="grid lg:grid-cols-3 gap-8">
-            {/* Session Info */}
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-8">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">ข้อมูลรอบเช็คชื่อ</h3>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm text-gray-500">ห้องเรียน</label>
-                    <p className="font-medium text-gray-900">
-                      {classrooms.find(c => c.id === selectedClassroom)?.name}
-                    </p>
-                  </div>
 
-                  <div>
-                    <label className="text-sm text-gray-500">วิธีการ</label>
-                    <p className="font-medium text-gray-900">
-                      {attendanceType === 'button' && 'กดปุ่มเช็คชื่อ'}
-                      {attendanceType === 'qr' && 'สแกน QR Code'}
-                      {attendanceType === 'code' && 'ป้อนรหัส'}
-                    </p>
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Preview Card */}
+            <div className="bg-white rounded-lg shadow border border-gray-200">
+              <div className="p-4 border-b border-gray-200">
+                <h3 className="text-sm font-medium text-gray-900">ตัวอย่าง</h3>
+              </div>
+              <div className="p-4">
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">
+                      {formData.sessionDate ? new Date(formData.sessionDate).toLocaleDateString('th-TH') : 'ยังไม่ได้เลือกวันที่'}
+                    </span>
                   </div>
-
-                  {attendanceType === 'code' && (
-                    <div>
-                      <label className="text-sm text-gray-500">รหัสเช็คชื่อ</label>
-                      <div className="bg-gray-100 p-3 rounded-lg text-center">
-                        <span className="text-2xl font-bold text-blue-600">{sessionCode}</span>
-                      </div>
+                  <div className="flex items-center space-x-2">
+                    <Clock className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">
+                      {formData.startTime && formData.endTime 
+                        ? `${formData.startTime} - ${formData.endTime}`
+                        : 'ยังไม่ได้เลือกเวลา'
+                      }
+                    </span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Users className="h-4 w-4 text-gray-400" />
+                    <span className="text-sm text-gray-600">
+                      {formData.classroomId 
+                        ? classrooms.find(c => c.id === formData.classroomId)?.name 
+                        : 'ยังไม่ได้เลือกห้องเรียน'
+                      }
+                    </span>
+                  </div>
+                  {formData.allowLateCheck && (
+                    <div className="flex items-center space-x-2">
+                      <AlertCircle className="h-4 w-4 text-yellow-500" />
+                      <span className="text-sm text-gray-600">
+                        อนุญาตเช็คชื่อสาย {formData.lateThreshold} นาที
+                      </span>
                     </div>
                   )}
-
-                  {attendanceType === 'qr' && (
-                    <div>
-                      <label className="text-sm text-gray-500">QR Code</label>
-                      <div className="bg-gray-100 p-4 rounded-lg text-center">
-                        <div className="w-32 h-32 bg-gray-300 mx-auto rounded-lg flex items-center justify-center">
-                          <span className="text-gray-500">QR Code</span>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="pt-4 border-t border-gray-200">
-                    <div className="grid grid-cols-2 gap-4 text-center">
-                      <div>
-                        <div className="text-2xl font-bold text-green-600">
-                          {attendanceList.filter(s => s.status === 'present').length}
-                        </div>
-                        <div className="text-sm text-gray-500">เช็คชื่อแล้ว</div>
-                      </div>
-                      <div>
-                        <div className="text-2xl font-bold text-gray-400">
-                          {attendanceList.filter(s => s.status === 'waiting').length}
-                        </div>
-                        <div className="text-sm text-gray-500">รอเช็คชื่อ</div>
-                      </div>
-                    </div>
-                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Student List */}
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">รายชื่อนักเรียน</h3>
-                
-                <div className="space-y-3">
-                  {attendanceList.map((student) => (
-                    <div key={student.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
-                          <span className="text-sm font-medium text-gray-600">
-                            {student.name.charAt(3)}
-                          </span>
-                        </div>
-                        <span className="font-medium text-gray-900">{student.name}</span>
-                      </div>
+            {/* Tips */}
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+              <h3 className="text-sm font-medium text-blue-800 mb-2">💡 เคล็ดลับ</h3>
+              <ul className="text-sm text-blue-700 space-y-1">
+                <li>• ตั้งเวลาเริ่มก่อนเวลาเรียน 5-10 นาที</li>
+                <li>• ใช้หัวข้อที่อธิบายบทเรียนชัดเจน</li>
+                <li>• อนุญาตเช็คชื่อสายสำหรับยามฉุกเฉิน</li>
+                <li>• ตรวจสอบรายชื่อนักเรียนก่อนเปิด</li>
+              </ul>
+            </div>
+          </div>
+        </div>
 
-                      <div className="flex items-center space-x-2">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(student.status)}`}>
-                          {getStatusText(student.status)}
-                        </span>
-                        
-                        {student.status === 'waiting' && (
-                          <div className="flex space-x-1">
-                            <button
-                              onClick={() => updateStudentStatus(student.id, 'present')}
-                              className="bg-green-500 hover:bg-green-600 text-white px-2 py-1 rounded text-xs transition-colors"
-                            >
-                              มา
-                            </button>
-                            <button
-                              onClick={() => updateStudentStatus(student.id, 'absent')}
-                              className="bg-red-500 hover:bg-red-600 text-white px-2 py-1 rounded text-xs transition-colors"
-                            >
-                              ขาด
-                            </button>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+        {/* Success Modal */}
+        {showSuccess && (
+          <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
+            <div className="relative top-20 mx-auto p-6 border w-full max-w-md shadow-lg rounded-lg bg-white">
+              <div className="text-center">
+                <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <CheckCircle className="h-8 w-8 text-green-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">เปิดรอบเช็คชื่อสำเร็จ!</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  รอบเช็คชื่อได้ถูกสร้างเรียบร้อยแล้ว นักเรียนสามารถเข้าร่วมเช็คชื่อได้
+                </p>
+                <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                  <p className="text-sm font-medium text-gray-900">รหัสเช็คชื่อ:</p>
+                  <p className="text-lg font-mono font-bold text-blue-600">ATT-{Math.random().toString(36).substr(2, 6).toUpperCase()}</p>
                 </div>
               </div>
             </div>
           </div>
         )}
       </div>
-    </div>
-  )
+    </TeacherLayout>
+  );
 }
