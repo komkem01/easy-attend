@@ -144,75 +144,75 @@ export default function AttendancePage() {
       subtitle="สร้างและติดตามการเช็คชื่อของนักเรียน"
     >
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">รอบทั้งหมด</p>
-              <p className="text-2xl font-bold text-gray-900">{sessions.length}</p>
+              <p className="text-xs sm:text-sm font-medium text-gray-600">รอบทั้งหมด</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{sessions.length}</p>
             </div>
-            <Calendar className="h-8 w-8 text-gray-600" />
+            <Calendar className="h-6 w-6 sm:h-8 sm:w-8 text-gray-600" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">กำลังเช็คชื่อ</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-xs sm:text-sm font-medium text-gray-600">กำลังเช็คชื่อ</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-600">
                 {sessions.filter(s => s.status === 'active').length}
               </p>
             </div>
-            <Play className="h-8 w-8 text-green-600" />
+            <Play className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">กำหนดการ</p>
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-xs sm:text-sm font-medium text-gray-600">กำหนดการ</p>
+              <p className="text-xl sm:text-2xl font-bold text-blue-600">
                 {sessions.filter(s => s.status === 'scheduled').length}
               </p>
             </div>
-            <Clock className="h-8 w-8 text-blue-600" />
+            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
+        <div className="bg-white rounded-lg shadow p-4 sm:p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">เข้าเรียนเฉลี่ย</p>
-              <p className="text-2xl font-bold text-purple-600">
+              <p className="text-xs sm:text-sm font-medium text-gray-600">เข้าเรียนเฉลี่ย</p>
+              <p className="text-xl sm:text-2xl font-bold text-purple-600">
                 {sessions.length > 0 
                   ? (sessions.reduce((sum, s) => sum + getAttendancePercentage(s.attendees, s.totalStudents), 0) / sessions.length).toFixed(1)
                   : 0
                 }%
               </p>
             </div>
-            <Users className="h-8 w-8 text-purple-600" />
+            <Users className="h-6 w-6 sm:h-8 sm:w-8 text-purple-600" />
           </div>
         </div>
       </div>
 
       {/* Header Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div className="flex items-center space-x-4">
-          <div className="relative">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center w-full sm:w-auto space-y-3 sm:space-y-0 sm:space-x-4">
+          <div className="relative w-full sm:w-auto">
             <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="ค้นหารอบเช็คชื่อ..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full sm:w-64 pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white text-sm sm:text-base"
             />
           </div>
           
           <select
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full sm:w-auto px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white text-sm sm:text-base"
           >
             <option value="all">ทุกสถานะ</option>
             <option value="active">กำลังเช็คชื่อ</option>
@@ -223,7 +223,7 @@ export default function AttendancePage() {
 
         <button
           onClick={handleCreateAttendance}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base"
         >
           <Plus className="h-4 w-4" />
           <span>เปิดรอบเช็คชื่อ</span>
@@ -231,18 +231,18 @@ export default function AttendancePage() {
       </div>
 
       {/* Sessions List */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {filteredSessions.map((session) => (
           <div key={session.id} className="bg-white rounded-lg shadow border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="p-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col lg:flex-row items-start justify-between space-y-3 lg:space-y-0">
+                <div className="flex-1 w-full lg:w-auto">
+                  <div className="flex flex-col sm:flex-row items-start justify-between mb-3 space-y-2 sm:space-y-0">
+                    <div className="w-full sm:w-auto">
+                      <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1">
                         {session.title}
                       </h3>
-                      <p className="text-sm text-gray-600">{session.classroomName}</p>
+                      <p className="text-xs sm:text-sm text-gray-600">{session.classroomName}</p>
                     </div>
                     <div className="flex items-center space-x-2">
                       <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(session.status)}`}>

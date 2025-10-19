@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
+import TeacherLayout from '@/components/TeacherLayout'
 
 export default function MyAttendancePage() {
   const [selectedPeriod, setSelectedPeriod] = useState('this-month')
@@ -95,53 +96,43 @@ export default function MyAttendancePage() {
   const attendanceRate = totalSessions > 0 ? Math.round(((presentCount + lateCount + excusedCount) / totalSessions) * 100) : 0
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
-      {/* Header */}
-      <header className="bg-white shadow-sm border-b border-blue-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-4">
-              <Link href="/dashboard" className="text-blue-600 hover:text-blue-700">
-                ← กลับสู่หน้าหลัก
-              </Link>
-              <h1 className="text-xl font-bold text-gray-900">ประวัติการเข้าเรียน</h1>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <TeacherLayout 
+      title="ประวัติการเข้าเรียน" 
+      subtitle="ดูประวัติการเข้าเรียนของคุณ"
+      activeMenuItem="my-attendance"
+    >
+      <div className="max-w-7xl mx-auto">
         {/* Statistics Cards */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-green-600">{presentCount}</div>
-            <div className="text-sm text-gray-500">มา</div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-green-600">{presentCount}</div>
+            <div className="text-xs sm:text-sm text-gray-500">มา</div>
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-yellow-600">{lateCount}</div>
-            <div className="text-sm text-gray-500">สาย</div>
+          <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-yellow-600">{lateCount}</div>
+            <div className="text-xs sm:text-sm text-gray-500">สาย</div>
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-red-600">{absentCount}</div>
-            <div className="text-sm text-gray-500">ขาด</div>
+          <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-red-600">{absentCount}</div>
+            <div className="text-xs sm:text-sm text-gray-500">ขาด</div>
           </div>
-          <div className="bg-white rounded-xl shadow-lg p-4 text-center">
-            <div className="text-2xl font-bold text-blue-600">{attendanceRate}%</div>
-            <div className="text-sm text-gray-500">อัตราเข้าเรียน</div>
+          <div className="bg-white rounded-xl shadow-lg p-3 sm:p-4 text-center">
+            <div className="text-xl sm:text-2xl font-bold text-blue-600">{attendanceRate}%</div>
+            <div className="text-xs sm:text-sm text-gray-500">อัตราเข้าเรียน</div>
           </div>
         </div>
 
         {/* Filters */}
-        <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-          <div className="grid md:grid-cols-2 gap-4">
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                 ช่วงเวลา
               </label>
               <select
                 value={selectedPeriod}
                 onChange={(e) => setSelectedPeriod(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm sm:text-base"
               >
                 <option value="this-week">สัปดาห์นี้</option>
                 <option value="this-month">เดือนนี้</option>
@@ -151,13 +142,13 @@ export default function MyAttendancePage() {
             </div>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                 วิชา
               </label>
               <select
                 value={selectedClassroom}
                 onChange={(e) => setSelectedClassroom(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-900 text-sm sm:text-base"
               >
                 <option value="all">ทุกวิชา</option>
                 {classrooms.map(classroom => (
@@ -171,8 +162,8 @@ export default function MyAttendancePage() {
         </div>
 
         {/* Attendance History */}
-        <div className="bg-white rounded-xl shadow-lg p-6">
-          <h2 className="text-xl font-bold text-gray-900 mb-6">ประวัติการเช็คชื่อ</h2>
+        <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">ประวัติการเช็คชื่อ</h2>
           
           {filteredAttendance.length === 0 ? (
             <div className="text-center py-12">
@@ -183,22 +174,22 @@ export default function MyAttendancePage() {
               <p className="text-gray-500">ยังไม่มีประวัติการเช็คชื่อในช่วงเวลาที่เลือก</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {filteredAttendance.map((record) => {
                 const statusInfo = getStatusInfo(record.status)
                 return (
-                  <div key={record.id} className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-semibold text-gray-900">{record.classroomName}</h3>
-                          <span className={`px-3 py-1 rounded-full text-sm font-medium border flex items-center space-x-1 ${statusInfo.color}`}>
+                  <div key={record.id} className="border border-gray-200 rounded-lg p-3 sm:p-4 hover:border-blue-300 transition-colors">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2 sm:space-y-0">
+                      <div className="flex-1 w-full">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 mb-2">
+                          <h3 className="text-sm sm:text-base font-semibold text-gray-900">{record.classroomName}</h3>
+                          <span className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium border flex items-center space-x-1 ${statusInfo.color} w-fit`}>
                             <span>{statusInfo.icon}</span>
                             <span>{statusInfo.text}</span>
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600">{record.teacherName}</p>
-                        <div className="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                        <p className="text-xs sm:text-sm text-gray-600">{record.teacherName}</p>
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-1 sm:space-y-0 sm:space-x-4 mt-2 text-xs sm:text-sm text-gray-500">
                           <span>📅 {new Date(record.date).toLocaleDateString('th-TH')}</span>
                           <span>🕐 {record.sessionTime}</span>
                           {record.checkTime && (
@@ -237,6 +228,6 @@ export default function MyAttendancePage() {
           </div>
         </div>
       </div>
-    </div>
+    </TeacherLayout>
   )
 }

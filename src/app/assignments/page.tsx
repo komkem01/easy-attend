@@ -124,8 +124,8 @@ export default function AssignmentsPage() {
       onMenuItemClick={handleMenuClick}
     >
       {/* Header Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div className="flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="flex-1 w-full sm:max-w-md">
           <div className="relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -133,13 +133,13 @@ export default function AssignmentsPage() {
               placeholder="ค้นหางาน..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white text-sm sm:text-base"
             />
           </div>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base"
         >
           <Plus className="h-4 w-4" />
           <span>สร้างงานใหม่</span>
@@ -147,57 +147,57 @@ export default function AssignmentsPage() {
       </div>
 
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        <div className="bg-white rounded-lg shadow p-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <div className="bg-white rounded-lg shadow p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">งานทั้งหมด</p>
-              <p className="text-2xl font-bold text-gray-900">{assignments.length}</p>
+              <p className="text-xs sm:text-sm text-gray-600">งานทั้งหมด</p>
+              <p className="text-xl sm:text-2xl font-bold text-gray-900">{assignments.length}</p>
             </div>
-            <FileText className="h-8 w-8 text-blue-600" />
+            <FileText className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">เปิดรับงาน</p>
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-xs sm:text-sm text-gray-600">เปิดรับงาน</p>
+              <p className="text-xl sm:text-2xl font-bold text-green-600">
                 {assignments.filter(a => a.status === 'active').length}
               </p>
             </div>
-            <CheckCircle className="h-8 w-8 text-green-600" />
+            <CheckCircle className="h-6 w-6 sm:h-8 sm:w-8 text-green-600" />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">รอตรวจ</p>
-              <p className="text-2xl font-bold text-orange-600">
+              <p className="text-xs sm:text-sm text-gray-600">รอตรวจ</p>
+              <p className="text-xl sm:text-2xl font-bold text-orange-600">
                 {assignments.reduce((sum, a) => sum + (a.totalStudents - a.submissionsCount), 0)}
               </p>
             </div>
-            <Clock className="h-8 w-8 text-orange-600" />
+            <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-orange-600" />
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow p-4">
+        <div className="bg-white rounded-lg shadow p-3 sm:p-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm text-gray-600">ครบกำหนดแล้ว</p>
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-xs sm:text-sm text-gray-600">ครบกำหนดแล้ว</p>
+              <p className="text-xl sm:text-2xl font-bold text-red-600">
                 {assignments.filter(a => new Date(a.dueDate) < new Date() && a.status === 'active').length}
               </p>
             </div>
-            <AlertTriangle className="h-8 w-8 text-red-600" />
+            <AlertTriangle className="h-6 w-6 sm:h-8 sm:w-8 text-red-600" />
           </div>
         </div>
       </div>
 
       {/* Assignments List */}
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {filteredAssignments.map((assignment) => (
           <div key={assignment.id} className="bg-white rounded-lg shadow border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="p-6">
-              <div className="flex items-start justify-between">
+            <div className="p-4 sm:p-6">
+              <div className="flex flex-col lg:flex-row items-start justify-between space-y-3 lg:space-y-0">
                 <div className="flex-1">
                   <div className="flex items-start justify-between mb-2">
                     <div>
@@ -381,7 +381,7 @@ function CreateAssignmentModal({ onClose, onSubmit }: CreateAssignmentModalProps
               <select
                 value={formData.classroomId}
                 onChange={(e) => setFormData({ ...formData, classroomId: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                 required
               >
                 <option value="">เลือกห้องเรียน</option>
@@ -400,7 +400,7 @@ function CreateAssignmentModal({ onClose, onSubmit }: CreateAssignmentModalProps
                 type="number"
                 value={formData.maxScore}
                 onChange={(e) => setFormData({ ...formData, maxScore: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                 placeholder="100"
                 min="1"
               />
@@ -415,7 +415,7 @@ function CreateAssignmentModal({ onClose, onSubmit }: CreateAssignmentModalProps
               type="text"
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               placeholder="เช่น แบบฝึกหัดบทที่ 5: สมการกำลังสอง"
               required
             />
@@ -429,7 +429,7 @@ function CreateAssignmentModal({ onClose, onSubmit }: CreateAssignmentModalProps
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               placeholder="อธิบายงานที่มอบหมายโดยย่อ..."
               required
             />
@@ -443,7 +443,7 @@ function CreateAssignmentModal({ onClose, onSubmit }: CreateAssignmentModalProps
               value={formData.instructions}
               onChange={(e) => setFormData({ ...formData, instructions: e.target.value })}
               rows={4}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               placeholder="ให้คำแนะนำรายละเอียดเกี่ยวกับการทำงาน..."
             />
           </div>
@@ -456,7 +456,7 @@ function CreateAssignmentModal({ onClose, onSubmit }: CreateAssignmentModalProps
               type="datetime-local"
               value={formData.dueDate}
               onChange={(e) => setFormData({ ...formData, dueDate: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               required
             />
           </div>

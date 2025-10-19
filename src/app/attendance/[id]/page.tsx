@@ -288,7 +288,7 @@ export default function AttendanceDetailPage() {
                   <select
                     value={bulkAction}
                     onChange={(e) => setBulkAction(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-lg text-sm"
+                    className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-900 bg-white"
                   >
                     <option value="">เลือกการดำเนินการ</option>
                     <option value="present">ทำเครื่องหมายมาเรียน</option>

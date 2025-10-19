@@ -102,8 +102,8 @@ export default function ClassroomsPage() {
       onMenuItemClick={handleMenuClick}
     >
       {/* Header Actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        <div className="flex-1 max-w-md">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+        <div className="flex-1 w-full sm:max-w-md">
           <div className="relative">
             <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <input
@@ -111,13 +111,13 @@ export default function ClassroomsPage() {
               placeholder="ค้นหาห้องเรียน..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white text-sm sm:text-base"
             />
           </div>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors text-sm sm:text-base"
         >
           <Plus className="h-4 w-4" />
           <span>สร้างห้องเรียนใหม่</span>
@@ -125,16 +125,16 @@ export default function ClassroomsPage() {
       </div>
 
       {/* Classrooms Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         {filteredClassrooms.map((classroom) => (
           <div key={classroom.id} className="bg-white rounded-lg shadow border border-gray-200 hover:shadow-md transition-shadow">
-            <div className="p-6">
-              <div className="flex items-start justify-between mb-4">
-                <div className="flex-1">
-                  <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            <div className="p-4 sm:p-6">
+              <div className="flex items-start justify-between mb-3 sm:mb-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-1 truncate">
                     {classroom.name}
                   </h3>
-                  <p className="text-sm text-gray-600">{classroom.subject}</p>
+                  <p className="text-xs sm:text-sm text-gray-600">{classroom.subject}</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <span className={`px-2 py-1 text-xs rounded-full ${
@@ -205,11 +205,11 @@ export default function ClassroomsPage() {
                 </div>
               </div>
 
-              <div className="flex space-x-2">
-                <button className="flex-1 bg-blue-50 text-blue-600 py-2 px-3 rounded-md text-sm font-medium hover:bg-blue-100 transition-colors">
+              <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                <button className="flex-1 bg-blue-50 text-blue-600 py-2 px-3 rounded-md text-xs sm:text-sm font-medium hover:bg-blue-100 transition-colors">
                   เช็คชื่อ
                 </button>
-                <button className="flex-1 bg-gray-50 text-gray-600 py-2 px-3 rounded-md text-sm font-medium hover:bg-gray-100 transition-colors">
+                <button className="flex-1 bg-gray-50 text-gray-600 py-2 px-3 rounded-md text-xs sm:text-sm font-medium hover:bg-gray-100 transition-colors">
                   ดูรายละเอียด
                 </button>
               </div>
@@ -291,7 +291,7 @@ function CreateClassroomModal({ onClose, onSubmit }: CreateClassroomModalProps) 
               type="text"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               placeholder="เช่น คณิตศาสตร์ ม.3/1"
               required
             />
@@ -305,7 +305,7 @@ function CreateClassroomModal({ onClose, onSubmit }: CreateClassroomModalProps) 
               type="text"
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               placeholder="เช่น คณิตศาสตร์"
               required
             />
@@ -319,7 +319,7 @@ function CreateClassroomModal({ onClose, onSubmit }: CreateClassroomModalProps) 
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
               placeholder="อธิบายเกี่ยวกับห้องเรียนนี้..."
             />
           </div>

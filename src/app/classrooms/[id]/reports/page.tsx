@@ -481,7 +481,7 @@ export default function ClassroomReportsPage() {
                 <span className="mr-2">🏆</span>
                 ผลงานนักเรียนแบบการ์ด
               </h3>
-              <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm">
+              <select className="border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-900 bg-white">
                 <option>เรียงตามคะแนน</option>
                 <option>เรียงตามชื่อ</option>
                 <option>เรียงตามการเข้าเรียน</option>

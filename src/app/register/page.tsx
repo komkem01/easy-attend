@@ -3,9 +3,9 @@
 import { useState } from 'react'
 
 export default function Register() {
-  const [showPassword, setShowPassword] = useState(false)
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
-  const [password, setPassword] = useState('')
+const [showPassword, setShowPassword] = useState(false)
+const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [passwordMatch, setPasswordMatch] = useState(true)
 
@@ -22,22 +22,22 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
       <div className="max-w-md w-full">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-6 sm:mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-xl">EA</span>
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+              <span className="text-white font-bold text-lg sm:text-xl">EA</span>
             </div>
           </div>
-          <h1 className="text-3xl font-bold text-blue-900 mb-2">สมัครสมาชิก</h1>
-          <p className="text-blue-600">ใช้งาน Easy Attend ฟรี ไม่มีค่าใช้จ่าย</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 mb-2">สมัครสมาชิก</h1>
+          <p className="text-sm sm:text-base text-blue-600">ใช้งาน Easy Attend ฟรี ไม่มีค่าใช้จ่าย</p>
         </div>
 
         {/* Register Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <form className="space-y-6">
+        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+          <form className="space-y-4 sm:space-y-6">
             <div>
               <label htmlFor="role" className="block text-sm font-medium text-gray-700 mb-2">
                 ประเภทผู้ใช้
@@ -45,7 +45,7 @@ export default function Register() {
               <select
                 id="role"
                 name="role"
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white text-sm sm:text-base"
                 required
               >
                 <option value="" disabled selected>เลือกประเภทผู้ใช้</option>

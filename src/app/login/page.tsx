@@ -1,21 +1,21 @@
 export default function Login() {
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4">
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center px-4 sm:px-6 lg:px-8">
             <div className="max-w-md w-full">
                 {/* Header */}
-                <div className="text-center mb-8">
+                <div className="text-center mb-6 sm:mb-8">
                     <div className="flex items-center justify-center space-x-2 mb-4">
-                        <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
-                            <span className="text-white font-bold text-xl">EA</span>
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                            <span className="text-white font-bold text-lg sm:text-xl">EA</span>
                         </div>
                     </div>
-                    <h1 className="text-3xl font-bold text-blue-900 mb-2">เข้าสู่ระบบ</h1>
-                    <p className="text-blue-600">Easy Attend - ใช้งานฟรี</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-blue-900 mb-2">เข้าสู่ระบบ</h1>
+                    <p className="text-sm sm:text-base text-blue-600">Easy Attend - ใช้งานฟรี</p>
                 </div>
 
                 {/* Login Form */}
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                    <form className="space-y-6">
+                <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+                    <form className="space-y-4 sm:space-y-6">
                         <div>
                             <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
                                 ชื่อผู้ใช้/อีเมล
@@ -24,7 +24,7 @@ export default function Login() {
                                 type="text"
                                 id="username"
                                 name="username"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white text-sm sm:text-base"
                                 placeholder="ชื่อผู้ใช้หรืออีเมล"
                                 required
                             />
@@ -38,7 +38,7 @@ export default function Login() {
                                 type="password"
                                 id="password"
                                 name="password"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+                                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors text-gray-900 bg-white text-sm sm:text-base"
                                 placeholder="กรอกรหัสผ่านของคุณ"
                                 required
                             />
@@ -94,14 +94,24 @@ export default function Login() {
                     {/* </div> */}
                 </div>
 
-                {/* Back to Home */}
-                <div className="text-center mt-6">
-                    <a href="/" className="text-blue-600 hover:text-blue-700 transition-colors flex items-center justify-center space-x-2">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                        </svg>
-                        <span>กลับสู่หน้าแรก</span>
-                    </a>
+                {/* Navigation Links */}
+                <div className="text-center mt-6 space-y-2">
+                    <div>
+                        <a href="/" className="text-blue-600 hover:text-blue-700 transition-colors flex items-center justify-center space-x-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                            </svg>
+                            <span>กลับสู่หน้าแรก</span>
+                        </a>
+                    </div>
+                    <div>
+                        <a href="/about" className="text-blue-600 hover:text-blue-700 transition-colors flex items-center justify-center space-x-2">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>เกี่ยวกับระบบ</span>
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

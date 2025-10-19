@@ -100,7 +100,7 @@ export default function Home() {
                     <div className="mt-6 text-center">
                         <p className="text-gray-600">
                             ยังไม่มีบัญชี?{' '}
-                            <a href="/register" className="text-blue-600 hover:text-blue-500 font-semibold">
+                            <a href="/register" className="text-blue-600 hover:text-blue-500 font-semibold hover:underline">
                                 สมัครสมาชิก
                             </a>
                         </p>

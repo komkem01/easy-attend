@@ -98,7 +98,7 @@ export default function CreateAttendancePage() {
                   <select
                     value={formData.classroomId}
                     onChange={(e) => setFormData({ ...formData, classroomId: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                     required
                   >
                     <option value="">เลือกห้องเรียน</option>
@@ -119,7 +119,7 @@ export default function CreateAttendancePage() {
                     type="text"
                     value={formData.title}
                     onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                     placeholder="เช่น เช็คชื่อบทที่ 5: สมการกำลังสอง"
                     required
                   />
@@ -134,7 +134,7 @@ export default function CreateAttendancePage() {
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={3}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                     placeholder="อธิบายเกี่ยวกับการเช็คชื่อครั้งนี้..."
                   />
                 </div>
@@ -149,7 +149,7 @@ export default function CreateAttendancePage() {
                       type="date"
                       value={formData.sessionDate}
                       onChange={(e) => setFormData({ ...formData, sessionDate: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                       required
                     />
                   </div>
@@ -161,7 +161,7 @@ export default function CreateAttendancePage() {
                       type="time"
                       value={formData.startTime}
                       onChange={(e) => setFormData({ ...formData, startTime: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                       required
                     />
                   </div>
@@ -173,7 +173,7 @@ export default function CreateAttendancePage() {
                       type="time"
                       value={formData.endTime}
                       onChange={(e) => setFormData({ ...formData, endTime: e.target.value })}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                       required
                     />
                   </div>
@@ -205,7 +205,7 @@ export default function CreateAttendancePage() {
                       <select
                         value={formData.lateThreshold}
                         onChange={(e) => setFormData({ ...formData, lateThreshold: parseInt(e.target.value) })}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-900 bg-white"
                       >
                         <option value={5}>5 นาที</option>
                         <option value={10}>10 นาที</option>
