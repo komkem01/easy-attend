@@ -74,7 +74,10 @@ export default function CreateAttendancePage() {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="mb-6">
-          <button className="flex items-center text-gray-600 hover:text-gray-800 mb-4">
+          <button 
+            onClick={() => window.history.back()}
+            className="flex items-center text-gray-600 hover:text-gray-800 mb-4"
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             กลับไปหน้าเช็คชื่อ
           </button>
