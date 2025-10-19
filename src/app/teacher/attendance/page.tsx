@@ -99,6 +99,8 @@ export default function AttendancePage() {
     }
   };
 
+
+
   const getStatusText = (status: string) => {
     switch (status) {
       case 'active':
@@ -117,25 +119,31 @@ export default function AttendancePage() {
   };
 
   const handleCreateAttendance = () => {
-    router.push('/attendance/create');
+    router.push('/teacher/attendance/create');
   };
 
   const handleViewSession = (sessionId: string) => {
-    router.push(`/attendance/${sessionId}`);
+    router.push(`/teacher/attendance/${sessionId}`);
+    setSelectedSession(null);
   };
 
   const handleEditSession = (sessionId: string) => {
-    router.push(`/attendance/${sessionId}/edit`);
+    // Navigate to edit page or open edit modal
+    console.log('Edit session:', sessionId);
+    setSelectedSession(null);
   };
 
   const handleEndSession = (sessionId: string) => {
-    console.log('Ending session:', sessionId);
-    // ในการใช้งานจริงจะเรียก API
+    // End the active session
+    console.log('End session:', sessionId);
+    setSelectedSession(null);
   };
 
   const handleDeleteSession = (sessionId: string) => {
-    console.log('Deleting session:', sessionId);
-    // ในการใช้งานจริงจะเรียก API
+    if (confirm('คุณแน่ใจหรือไม่ที่จะลบรอบเช็คชื่อนี้?')) {
+      console.log('Delete session:', sessionId);
+      setSelectedSession(null);
+    }
   };
 
   return (
@@ -263,24 +271,24 @@ export default function AttendancePage() {
                           <div className="absolute right-0 top-8 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-10">
                             <button 
                               onClick={() => handleViewSession(session.id)}
-                              className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2"
+                              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                             >
-                              <Eye className="h-4 w-4" />
+                              <Eye className="h-4 w-4 text-gray-600" />
                               <span>ดูรายละเอียด</span>
                             </button>
                             <button 
                               onClick={() => handleEditSession(session.id)}
-                              className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2"
+                              className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                             >
-                              <Edit className="h-4 w-4" />
+                              <Edit className="h-4 w-4 text-gray-600" />
                               <span>แก้ไข</span>
                             </button>
                             {session.status === 'active' && (
                               <button 
                                 onClick={() => handleEndSession(session.id)}
-                                className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50 flex items-center space-x-2"
+                                className="w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-50 flex items-center space-x-2"
                               >
-                                <Pause className="h-4 w-4" />
+                                <Pause className="h-4 w-4 text-gray-600" />
                                 <span>สิ้นสุดรอบ</span>
                               </button>
                             )}
