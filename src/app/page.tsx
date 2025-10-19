@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation'
 export default function Home() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [role, setRole] = useState<'teacher' | 'student'>('teacher')
     const [isLoading, setIsLoading] = useState(false)
     const router = useRouter()
 
@@ -15,9 +16,18 @@ export default function Home() {
         
         // Simulate API call
         setTimeout(() => {
-            console.log('Login:', { email, password })
-            // Redirect to dashboard
-            router.push('/dashboard')
+            console.log('Login:', { email, password, role })
+            
+            // Store user role in localStorage for demo
+            localStorage.setItem('userRole', role)
+            localStorage.setItem('userEmail', email)
+            
+            // Redirect based on role
+            if (role === 'teacher') {
+                router.push('/teacher/dashboard')
+            } else {
+                router.push('/student/dashboard')
+            }
             setIsLoading(false)
         }, 1000)
     }
@@ -39,6 +49,45 @@ export default function Home() {
                 {/* Login Form */}
                 <div className="bg-white rounded-2xl shadow-xl p-8">
                     <form onSubmit={handleSubmit} className="space-y-6">
+                        {/* Role Selection */}
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-3">
+                                เข้าสู่ระบบในฐานะ
+                            </label>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button
+                                    type="button"
+                                    onClick={() => setRole('teacher')}
+                                    className={`p-4 border-2 rounded-lg transition-all ${
+                                        role === 'teacher' 
+                                            ? 'border-blue-500 bg-blue-50 text-blue-700' 
+                                            : 'border-gray-300 hover:border-gray-400'
+                                    }`}
+                                >
+                                    <div className="text-center">
+                                        <div className="text-2xl mb-1">👨‍🏫</div>
+                                        <div className="font-medium">ครู</div>
+                                        <div className="text-xs text-gray-500">Teacher</div>
+                                    </div>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setRole('student')}
+                                    className={`p-4 border-2 rounded-lg transition-all ${
+                                        role === 'student' 
+                                            ? 'border-green-500 bg-green-50 text-green-700' 
+                                            : 'border-gray-300 hover:border-gray-400'
+                                    }`}
+                                >
+                                    <div className="text-center">
+                                        <div className="text-2xl mb-1">👨‍🎓</div>
+                                        <div className="font-medium">นักเรียน</div>
+                                        <div className="text-xs text-gray-500">Student</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                                 อีเมล
