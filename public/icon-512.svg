@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="64" fill="#10b981"/>
+  <rect x="96" y="176" width="320" height="160" rx="16" fill="white"/>
+  <circle cx="176" cy="224" r="16" fill="#10b981"/>
+  <circle cx="256" cy="224" r="16" fill="#10b981"/>
+  <circle cx="336" cy="224" r="16" fill="#10b981"/>
+  <rect x="128" y="272" width="256" height="24" rx="12" fill="#10b981"/>
+  <text x="256" y="400" font-family="Arial, sans-serif" font-size="48" font-weight="bold" text-anchor="middle" fill="white">Easy Attend</text>
+</svg>
